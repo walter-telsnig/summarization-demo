@@ -1,17 +1,24 @@
+
 import spacy
 import pytextrank
-import os
-from spacy.util import get_package_path
-from pathlib import Path
+from spacy.cli import download
+from spacy.util import is_package, get_package_path
 
 def load_pipeline():
+    model = "en_core_web_sm"
     try:
-        nlp = spacy.load("en_core_web_sm")
+        nlp = spacy.load(model)
     except OSError:
-        from spacy.cli import download
-        download("en_core_web_sm", False)
-        model_path = get_package_path("en_core_web_sm")
+        if not is_package(model):
+            download(model)  # Downloads into user space (safe on Streamlit Cloud)
+        model_path = get_package_path(model)
         nlp = spacy.load(model_path)
+
     if "textrank" not in nlp.pipe_names:
         nlp.add_pipe("textrank")
     return nlp
+
+def summarize_spacy_textrank(text, limit_phrases=10):
+    nlp = load_pipeline()
+    doc = nlp(text)
+    return " ".join([str(s) for s in doc._.textrank.summary(limit_phrases=limit_phrases)])
