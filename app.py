@@ -1,5 +1,8 @@
 
 import streamlit as st
+import nltk
+nltk.download("punkt")
+
 from summarizers.classic_luhn import summarize_luhn
 from summarizers.huggingface import summarize_bart, summarize_t5
 from pathlib import Path
