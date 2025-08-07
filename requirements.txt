@@ -1,0 +1,4 @@
+streamlit
+sumy
+transformers
+torch
