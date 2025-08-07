@@ -3,7 +3,7 @@ import streamlit as st
 import nltk
 nltk.download("punkt")
 
-from summarizers.lexrank import summarize_lexrank
+from summarizers.textrank_spacy import summarize_spacy_textrank
 from pathlib import Path
 
 # Load sample text
@@ -18,9 +18,9 @@ except FileNotFoundError:
 
 # Sidebar
 st.sidebar.title("🔧 Summarization Settings")
-use_lexrank = st.sidebar.checkbox("Use LexRank", value=True)
+use_textrank = st.sidebar.checkbox("Use spaCy TextRank", value=True)
 
-num_sentences = st.sidebar.slider("Number of sentences", 1, 10, 3)
+num_phrases = st.sidebar.slider("Summary size (# key phrases)", 1, 20, 10)
 
 input_source = st.sidebar.radio("Choose input:", ("Sample Text", "Paste your own"))
 if input_source == "Paste your own":
@@ -29,13 +29,13 @@ else:
     input_text = default_text
 
 # Main UI
-st.title("🧠 Text Summarization Demo (LexRank)")
+st.title("🧠 Text Summarization Demo (spaCy TextRank)")
 with st.expander("📄 Show Original Text"):
     st.write(input_text)
 
-if use_lexrank:
-    st.subheader("📃 LexRank Summary")
-    summary = summarize_lexrank(input_text, num_sentences=num_sentences)
+if use_textrank:
+    st.subheader("📃 Extractive Summary (TextRank)")
+    summary = summarize_spacy_textrank(input_text, limit_phrases=num_phrases)
     st.write(summary)
 else:
     st.info("Please select at least one summarization method in the sidebar.")
