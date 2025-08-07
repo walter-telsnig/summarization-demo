@@ -8,7 +8,11 @@ from summarizers.huggingface import summarize_bart, summarize_t5
 from pathlib import Path
 
 # Load sample text
-default_text = Path("data/sample_text.txt").read_text()
+try:
+    default_text = Path("data/sample_text.txt").read_text()
+except FileNotFoundError:
+    default_text = \"\"\"The history of natural language processing (NLP) generally started in the 1950s, although work can be found from earlier periods...
+    \"\"\"  # ← Add your full default here
 
 # Sidebar UI
 st.sidebar.title("🔧 Summarization Settings")
